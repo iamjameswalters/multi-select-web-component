@@ -24,17 +24,17 @@ class MultiSelect extends HTMLElement {
         unselected.appendChild(li)
       }
     }
-    let borg = document.createElement("li")
-    borg.innerText = "default"
+    let defaultThing = document.createElement("li")
+    defaultThing.innerText = "default"
     selected.appendChild(borg)
     const sel_label = document.createElement("h1")
     sel_label.innerText = "Selected:"
     const unsel_label = document.createElement("h1")
     unsel_label.innerText = "Unselected:"
 
-    // shadowRoot.appendChild(sel_label)
+    shadowRoot.appendChild(sel_label)
     shadowRoot.appendChild(selected)
-    // shadowRoot.appendChild(unsel_label)
+    shadowRoot.appendChild(unsel_label)
     shadowRoot.appendChild(unselected)
 
   }

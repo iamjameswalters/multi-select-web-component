@@ -8,25 +8,21 @@ class MultiSelect extends HTMLElement {
     const selected = document.createElement("ul")
     
     let options = []
-    for (option of this.querySelectorAll("option")) {
+    for (let option of this.querySelectorAll("option")) {
       options.push(option.cloneNode(true))
     }
 
-    console.log(options)
-    for (item of options) {
+    for (let item of options) {
       let li = document.createElement("li")
       li.innerText = item.innerText
 
-      console.log(li)
       if (item.selected) {
         selected.appendChild(li)
       } else {
         unselected.appendChild(li)
       }
     }
-    let defaultThing = document.createElement("li")
-    defaultThing.innerText = "default"
-    selected.appendChild(borg)
+    
     const sel_label = document.createElement("h1")
     sel_label.innerText = "Selected:"
     const unsel_label = document.createElement("h1")
@@ -39,16 +35,12 @@ class MultiSelect extends HTMLElement {
 
   }
 
-  // shadowRoot = this.attachShadow({mode: "open"})
-
   connectedCallback() {
-    let greeting = document.createElement("h1")
-    greeting.innerHTML = "Houston"
-    // let template = document.createElement("template")
-    // template.innerHTML = "<ul><slot></slot></ul>"
-    // let templateContent = template.content
-    // this.shadowRoot.appendChild(greeting)
-    // this.shadowRoot.appendChild(templateContent.cloneNode(true))
+
+  }
+
+  disconnectedCallback() {
+
   }
 }
 

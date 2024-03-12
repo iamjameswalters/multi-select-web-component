@@ -5,7 +5,9 @@ class MultiSelect extends HTMLElement {
     const shadowRoot = this.attachShadow({mode: "open"})
     
     this.unselected = document.createElement("select")
+    this.unselected.multiple = true
     this.selected = document.createElement("select")
+    this.selected.multiple = true
     
     this.options = []
     for (let option of this.querySelectorAll("option")) {
@@ -43,7 +45,7 @@ class MultiSelect extends HTMLElement {
   }
 
   get value() {
-    return this.selected[this.selected.selectedIndex].value
+    return this.selected.selectedOptions
   }
 
   selBtnFunc = () => {

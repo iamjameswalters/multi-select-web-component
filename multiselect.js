@@ -4,8 +4,8 @@ class MultiSelect extends HTMLElement {
 
     const shadowRoot = this.attachShadow({mode: "open"})
     
-    const unselected = document.createElement("ul")
-    const selected = document.createElement("ul")
+    const unselected = document.createElement("select")
+    const selected = document.createElement("select")
     
     let options = []
     for (let option of this.querySelectorAll("option")) {
@@ -13,13 +13,11 @@ class MultiSelect extends HTMLElement {
     }
 
     for (let item of options) {
-      let li = document.createElement("li")
-      li.innerText = item.innerText
-
       if (item.selected) {
-        selected.appendChild(li)
+        item.selected = false
+        selected.appendChild(item)
       } else {
-        unselected.appendChild(li)
+        unselected.appendChild(item)
       }
     }
     
@@ -36,11 +34,11 @@ class MultiSelect extends HTMLElement {
   }
 
   connectedCallback() {
-
+    // Not sure what to put here yet
   }
 
   disconnectedCallback() {
-
+    // Not sure what to put here yet
   }
 }
 

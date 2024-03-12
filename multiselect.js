@@ -42,6 +42,10 @@ class MultiSelect extends HTMLElement {
 
   }
 
+  get value() {
+    return this.selected[this.selected.selectedIndex].value
+  }
+
   selBtnFunc = () => {
     const el = this.unselected
     const opt = el.options[el.selectedIndex]

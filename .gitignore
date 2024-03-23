@@ -1,2 +1,4 @@
 # Ignore html files for testing
 *.html
+# Ignore Python venv for testing
+venv/

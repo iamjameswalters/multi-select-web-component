@@ -8,7 +8,7 @@ class MultiSelect extends HTMLElement {
     this.unselected.multiple = true
     this.selected = document.createElement("select")
     this.selected.multiple = true
-    
+
     this.options = []
     for (let option of this.querySelectorAll("option")) {
       this.options.push(option.cloneNode(true))
@@ -16,7 +16,7 @@ class MultiSelect extends HTMLElement {
 
     for (let item of this.options) {
       if (item.selected) {
-        item.selected = false
+        item.selected = false 
         this.selected.appendChild(item)
       } else {
         this.unselected.appendChild(item)
@@ -45,7 +45,7 @@ class MultiSelect extends HTMLElement {
   }
 
   get value() {
-    return this.selected.selectedOptions
+    return this.selected.options
   }
 
   selBtnFunc = () => {

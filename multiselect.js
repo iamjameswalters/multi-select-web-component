@@ -1,8 +1,11 @@
 class MultiSelect extends HTMLElement {
+  static formAssociated = true;
+
   constructor() {
     super()
 
     const shadowRoot = this.attachShadow({mode: "open"})
+    this.internals = this.attachInternals()
     
     this.unselected = document.createElement("select")
     this.unselected.multiple = true
@@ -22,6 +25,8 @@ class MultiSelect extends HTMLElement {
         this.unselected.appendChild(item)
       }
     }
+
+    this.updateValue()
     
     this.sel_label = document.createElement("h1")
     this.sel_label.innerText = "Selected:"
@@ -44,8 +49,21 @@ class MultiSelect extends HTMLElement {
 
   }
 
+  set value(value) {
+    this._value = value;
+    this.internals.setFormValue(value);
+  }
+  
   get value() {
-    return this.selected.options
+    return this._value
+  }
+
+  updateValue() {
+    let valueArray = []
+    for (let option of this.selected.options) {
+      valueArray.push(option.value)
+    }
+    this.value = valueArray
   }
 
   selBtnFunc = () => {
@@ -53,6 +71,7 @@ class MultiSelect extends HTMLElement {
     const opt = el.options[el.selectedIndex]
     el.removeChild(opt)
     this.selected.appendChild(opt)
+    this.updateValue()
   }
 
   deselBtnFunc = () => {
@@ -60,6 +79,7 @@ class MultiSelect extends HTMLElement {
     const opt = el.options[el.selectedIndex]
     el.removeChild(opt)
     this.unselected.appendChild(opt)
+    this.updateValue()
   }
 
   connectedCallback() {

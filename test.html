@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script defer type="text/javascript" src="./multiselect.js"></script>
+    <script defer type="text/javascript" src="/multiselect.js"></script>
   </head>
   <body>
-    <multi-select id="ms">
-      <option value="1">One</option>
-      <option value="2" selected>Two</option>
-      <option value="3">Three</option>
-    </multi-select>
+    <form method="POST">
+      <multi-select id="ms" name="ms">
+        <option value="1">One</option>
+        <option value="2" selected>Two</option>
+        <option value="3">Three</option>
+      </multi-select>
+      <button type="submit">Submit</button>
+    </form>
   </body>
 </html>

@@ -7,11 +7,355 @@ class MultiSelect extends HTMLElement {
     const shadowRoot = this.attachShadow({mode: "open"})
     this.internals = this.attachInternals()
     
-    this.unselected = document.createElement("select")
-    this.unselected.multiple = true
+    // Add Bootstrap-inspired styles
+    const style = document.createElement('style')
+    style.textContent = `
+      :host {
+        display: block;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+        font-size: 1rem;
+        line-height: 1.5;
+        color:rgb(41, 41, 41);
+        max-width: 100%;
+      }
+      
+      .multiselect-container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 1rem;
+        align-items: start;
+        max-width: 100%;
+        padding: 1rem;
+      }
+      
+      .select-column {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      
+      .select-header {
+        background: rgb(248, 248, 248);
+        border: 1px solid rgb(218, 218, 218);
+        border-bottom: none;
+        border-radius: 0.375rem 0.375rem 0 0;
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .select-label {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color:rgb(87, 87, 87);
+        margin: 0;
+      }
+      
+      .filter-input {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+        border: 1px solid rgb(218, 218, 218);
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+      
+      .filter-input:focus {
+        border-color: #bebebe;
+        outline: 0;
+        box-shadow: 0 0 0 0.125rem rgba(125, 125, 125, 0.25);
+      }
+      
+      .select-box {
+        width: 100%;
+        height: 200px;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: rgb(41, 41, 41);
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid rgb(218, 218, 218);
+        border-radius: 0 0 0.375rem 0.375rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+      
+      .select-box:focus {
+        color: rgb(41, 41, 41);
+        background-color: #fff;
+        border-color: #bebebe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(125, 125, 125, 0.25);
+      }
+      
+      .select-box option {
+        padding: 0.5rem 0.5rem;
+        border-bottom: 1px solid rgb(239, 239, 239);
+      }
+      
+      .select-box option:last-child {
+        border-bottom: none;
+      }
+      
+      .button-column {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-self: center;
+        min-width: 38px;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        white-space: nowrap;
+        width: 42px;
+        height: 42px;
+      }
+      
+      .btn-success {
+        color: #fff;
+        background-color: #198754;
+        border-color: #198754;
+        font-weight: bold;
+        font-size: 1.25rem;
+      }
+      
+      .btn-success:hover {
+        color: #fff;
+        background-color: #157347;
+        border-color: #146c43;
+      }
+      
+      .btn-success:focus {
+        color: #fff;
+        background-color: #157347;
+        border-color: #146c43;
+        box-shadow: 0 0 0 0.25rem rgba(60, 153, 110, 0.5);
+      }
+      
+      .btn-danger {
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+        font-weight: bold;
+        font-size: 1.25rem;
+      }
+      
+      .btn-danger:hover {
+        color: #fff;
+        background-color: #bb2d3b;
+        border-color: #b02a37;
+      }
+      
+      .btn-danger:focus {
+        color: #fff;
+        background-color: #bb2d3b;
+        border-color: #b02a37;
+        box-shadow: 0 0 0 0.25rem rgba(225, 83, 97, 0.5);
+      }
+      
+      .btn-secondary {
+        color: #fff;
+        background-color: rgb(125, 125, 125);
+        border-color: rgb(125, 125, 125);
+      }
+      
+      .btn-secondary:hover {
+        color: #fff;
+        background-color: rgb(106, 106, 106);
+        border-color: rgb(100, 100, 100);
+      }
+      
+      .btn-secondary:focus {
+        color: #fff;
+        background-color: rgb(106, 106, 106);
+        border-color: rgb(100, 100, 100);
+        box-shadow: 0 0 0 0.25rem rgba(145, 145, 145, 0.5);
+      }
+      
+      .btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+      }
+      
+      @media (max-width: 768px) {
+        .multiselect-container {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        
+        .button-column {
+          flex-direction: row;
+          justify-content: center;
+          align-self: stretch;
+        }
+        
+        .select-box {
+          height: 150px;
+          min-width: auto;
+        }
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        .select-box::-webkit-scrollbar {
+          width: 14px;
+        }
+
+        .select-box::-webkit-scrollbar-track {
+          background: rgb(45, 45, 45);
+        }
+
+        .select-box::-webkit-scrollbar-thumb {
+          background-color: rgb(104, 104, 104);
+          border-radius: 7px;
+          border: 3px solid rgb(45, 45, 45);
+        }
+
+        .select-header {
+          background: rgb(58, 58, 58);
+          border-color: rgb(104, 104, 104);
+        }
+        
+        .select-label {
+          color: rgb(240, 240, 240);
+        }
+        
+        .filter-input {
+          background-color: rgb(72, 72, 72);
+          border-color: rgb(104, 104, 104);
+          color: rgb(240, 240, 240);
+        }
+        
+        .filter-input::placeholder {
+          color: rgb(192, 192, 192);
+        }
+        
+        .filter-input:focus {
+          border-color: #acacac;
+          box-shadow: 0 0 0 0.125rem rgba(172, 172, 172, 0.25);
+        }
+        
+        .select-box {
+          background-color: rgb(72, 72, 72);
+          border-color: rgb(104, 104, 104);
+          color: rgb(240, 240, 240);
+        }
+        
+        .select-box:focus {
+          background-color: rgb(72, 72, 72);
+          border-color: #acacac;
+          color: rgb(240, 240, 240);
+          box-shadow: 0 0 0 0.25rem rgba(172, 172, 172, 0.25);
+        }
+        
+        .select-box option {
+          background-color: rgb(72, 72, 72);
+          color: rgb(240, 240, 240);
+          border-bottom-color: rgb(104, 104, 104);
+        }
+        
+        :host {
+          color: rgb(240, 240, 240);
+        }
+      }
+    `
+    
+    shadowRoot.appendChild(style)
+    
+    // Create main container
+    this.container = document.createElement("div")
+    this.container.className = "multiselect-container"
+    
+    // Create selected column
+    this.selectedColumn = document.createElement("div")
+    this.selectedColumn.className = "select-column"
+    
+    this.selectedHeader = document.createElement("div")
+    this.selectedHeader.className = "select-header"
+    
+    this.sel_label = document.createElement("div")
+    this.sel_label.className = "select-label"
+    this.sel_label.innerText = "Selected"
+    
+    this.selectedFilter = document.createElement("input")
+    this.selectedFilter.type = "text"
+    this.selectedFilter.className = "filter-input"
+    this.selectedFilter.placeholder = "Filter selected..."
+    
+    this.selectedHeader.appendChild(this.sel_label)
+    this.selectedHeader.appendChild(this.selectedFilter)
+    
     this.selected = document.createElement("select")
     this.selected.multiple = true
+    this.selected.className = "select-box"
+    
+    this.selectedColumn.appendChild(this.selectedHeader)
+    this.selectedColumn.appendChild(this.selected)
+    
+    // Create button column
+    this.buttonColumn = document.createElement("div")
+    this.buttonColumn.className = "button-column"
+    
+    this.sel_btn = document.createElement("button")
+    this.sel_btn.innerText = "+"
+    this.sel_btn.className = "btn btn-success"
+    this.sel_btn.type = "button"
+    
+    this.desel_btn = document.createElement("button")
+    this.desel_btn.innerText = "−"
+    this.desel_btn.className = "btn btn-danger"
+    this.desel_btn.type = "button"
+    
+    this.buttonColumn.appendChild(this.sel_btn)
+    this.buttonColumn.appendChild(this.desel_btn)
+    
+    // Create unselected column
+    this.unselectedColumn = document.createElement("div")
+    this.unselectedColumn.className = "select-column"
+    
+    this.unselectedHeader = document.createElement("div")
+    this.unselectedHeader.className = "select-header"
+    
+    this.unsel_label = document.createElement("div")
+    this.unsel_label.className = "select-label"
+    this.unsel_label.innerText = "Available"
+    
+    this.availableFilter = document.createElement("input")
+    this.availableFilter.type = "text"
+    this.availableFilter.className = "filter-input"
+    this.availableFilter.placeholder = "Filter available..."
+    
+    this.unselectedHeader.appendChild(this.unsel_label)
+    this.unselectedHeader.appendChild(this.availableFilter)
+    
+    this.unselected = document.createElement("select")
+    this.unselected.multiple = true
+    this.unselected.className = "select-box"
+    
+    this.unselectedColumn.appendChild(this.unselectedHeader)
+    this.unselectedColumn.appendChild(this.unselected)
+    
+    // Assemble the component (flipped layout: Available - Buttons - Selected)
+    this.container.appendChild(this.unselectedColumn)
+    this.container.appendChild(this.buttonColumn)
+    this.container.appendChild(this.selectedColumn)
+    
+    shadowRoot.appendChild(this.container)
 
+    // Initialize options
     this.options = []
     for (let option of this.querySelectorAll("option")) {
       this.options.push(option.cloneNode(true))
@@ -27,26 +371,33 @@ class MultiSelect extends HTMLElement {
     }
 
     this.updateValue()
+    this.updateButtonStates()
+    this.setupFiltering()
+
+  }
+
+  setupFiltering() {
+    this.selectedFilter.addEventListener('input', () => {
+      this.filterOptions(this.selected, this.selectedFilter.value)
+    })
     
-    this.sel_label = document.createElement("h1")
-    this.sel_label.innerText = "Selected:"
-    this.unsel_label = document.createElement("h1")
-    this.unsel_label.innerText = "Unselected:"
+    this.availableFilter.addEventListener('input', () => {
+      this.filterOptions(this.unselected, this.availableFilter.value)
+    })
+  }
 
-    this.sel_btn = document.createElement("button")
-    this.sel_btn.innerText = "Select"
-    this.desel_btn = document.createElement("button")
-    this.desel_btn.innerText = "Deselect"
-    this.btn_div = document.createElement("div")
-    this.btn_div.appendChild(this.sel_btn)
-    this.btn_div.appendChild(this.desel_btn)
-
-    shadowRoot.appendChild(this.sel_label)
-    shadowRoot.appendChild(this.selected)
-    shadowRoot.appendChild(this.btn_div)
-    shadowRoot.appendChild(this.unsel_label)
-    shadowRoot.appendChild(this.unselected)
-
+  filterOptions(selectElement, filterValue) {
+    const options = Array.from(selectElement.options)
+    const searchText = filterValue.toLowerCase()
+    
+    options.forEach(option => {
+      const optionText = option.textContent.toLowerCase()
+      if (optionText.includes(searchText)) {
+        option.style.display = ''
+      } else {
+        option.style.display = 'none'
+      }
+    })
   }
 
   set value(value) {
@@ -66,30 +417,83 @@ class MultiSelect extends HTMLElement {
     this.value = valueArray
   }
 
+  updateButtonStates() {
+    this.sel_btn.disabled = this.unselected.selectedIndex === -1
+    this.desel_btn.disabled = this.selected.selectedIndex === -1
+  }
+
   selBtnFunc = () => {
     const el = this.unselected
-    const opt = el.options[el.selectedIndex]
-    el.removeChild(opt)
-    this.selected.appendChild(opt)
+    const selectedOptions = Array.from(el.selectedOptions)
+    
+    selectedOptions.forEach(opt => {
+      el.removeChild(opt)
+      this.selected.appendChild(opt)
+    })
+    
     this.updateValue()
+    this.updateButtonStates()
   }
 
   deselBtnFunc = () => {
     const el = this.selected
-    const opt = el.options[el.selectedIndex]
-    el.removeChild(opt)
-    this.unselected.appendChild(opt)
+    const selectedOptions = Array.from(el.selectedOptions)
+    
+    selectedOptions.forEach(opt => {
+      el.removeChild(opt)
+      this.unselected.appendChild(opt)
+    })
+    
     this.updateValue()
+    this.updateButtonStates()
+  }
+
+  updateButtonStatesOnChange = () => {
+    this.updateButtonStates()
+  }
+
+  mutualExclusionHandler = (targetSelect, otherSelect) => {
+    return () => {
+      if (targetSelect.selectedIndex !== -1) {
+        // Clear selection in the other select box
+        for (let i = 0; i < otherSelect.options.length; i++) {
+          otherSelect.options[i].selected = false;
+        }
+        this.updateButtonStates()
+      }
+    }
   }
 
   connectedCallback() {
     this.sel_btn.addEventListener("click", this.selBtnFunc)
     this.desel_btn.addEventListener("click", this.deselBtnFunc)
+    this.selected.addEventListener("change", this.updateButtonStatesOnChange)
+    this.unselected.addEventListener("change", this.updateButtonStatesOnChange)
+    
+    // Store handler references for proper cleanup
+    this.selectedMutualExclusionHandler = this.mutualExclusionHandler(this.selected, this.unselected)
+    this.unselectedMutualExclusionHandler = this.mutualExclusionHandler(this.unselected, this.selected)
+    
+    // Add mutual exclusion for selections
+    this.selected.addEventListener("change", this.selectedMutualExclusionHandler)
+    this.unselected.addEventListener("change", this.unselectedMutualExclusionHandler)
+    
+    this.setupFiltering()
   }
 
   disconnectedCallback() {
     this.sel_btn.removeEventListener("click", this.selBtnFunc)
     this.desel_btn.removeEventListener("click", this.deselBtnFunc)
+    this.selected.removeEventListener("change", this.updateButtonStatesOnChange)
+    this.unselected.removeEventListener("change", this.updateButtonStatesOnChange)
+    
+    // Remove mutual exclusion handlers
+    if (this.selectedMutualExclusionHandler) {
+      this.selected.removeEventListener("change", this.selectedMutualExclusionHandler)
+    }
+    if (this.unselectedMutualExclusionHandler) {
+      this.unselected.removeEventListener("change", this.unselectedMutualExclusionHandler)
+    }
   }
 }
 

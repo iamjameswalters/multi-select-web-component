@@ -53,8 +53,7 @@ class MultiSelect extends HTMLElement {
       }
       
       .filter-input {
-        width: 100%;
-        padding: 0.25rem 0.5rem;
+        padding: 0.5rem;
         font-size: 0.875rem;
         border: 1px solid #ced4da;
         border-radius: 0.25rem;
@@ -70,7 +69,6 @@ class MultiSelect extends HTMLElement {
       
       .select-box {
         width: 100%;
-        min-width: 200px;
         height: 200px;
         padding: 0.375rem 0.75rem;
         font-size: 1rem;
@@ -92,7 +90,7 @@ class MultiSelect extends HTMLElement {
       }
       
       .select-box option {
-        padding: 0.25rem 0.5rem;
+        padding: 0.5rem 0.5rem;
         border-bottom: 1px solid #e9ecef;
       }
       
@@ -105,7 +103,7 @@ class MultiSelect extends HTMLElement {
         flex-direction: column;
         gap: 0.5rem;
         align-self: center;
-        min-width: 100px;
+        min-width: 38px;
       }
       
       .btn {
@@ -123,6 +121,8 @@ class MultiSelect extends HTMLElement {
         border-radius: 0.375rem;
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         white-space: nowrap;
+        width: 42px;
+        height: 42px;
       }
       
       .btn-success {

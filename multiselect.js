@@ -210,6 +210,20 @@ class MultiSelect extends HTMLElement {
       }
       
       @media (prefers-color-scheme: dark) {
+        .select-box::-webkit-scrollbar {
+          width: 14px;
+        }
+
+        .select-box::-webkit-scrollbar-track {
+          background: rgb(45, 45, 45);
+        }
+
+        .select-box::-webkit-scrollbar-thumb {
+          background-color: rgb(104, 104, 104);
+          border-radius: 7px;
+          border: 3px solid rgb(45, 45, 45);
+        }
+
         .select-header {
           background: rgb(58, 58, 58);
           border-color: rgb(104, 104, 104);

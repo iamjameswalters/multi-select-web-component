@@ -34,11 +34,38 @@ class MultiSelect extends HTMLElement {
         min-width: 0;
       }
       
+      .select-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 1px solid #ced4da;
+        border-bottom: none;
+        border-radius: 0.375rem 0.375rem 0 0;
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
       .select-label {
         font-size: 1.125rem;
         font-weight: 600;
-        margin-bottom: 0.5rem;
         color: #495057;
+        margin: 0;
+      }
+      
+      .filter-input {
+        width: 100%;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+      
+      .filter-input:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.125rem rgba(13, 110, 253, 0.25);
       }
       
       .select-box {
@@ -52,7 +79,7 @@ class MultiSelect extends HTMLElement {
         background-color: #fff;
         background-image: none;
         border: 1px solid #ced4da;
-        border-radius: 0.375rem;
+        border-radius: 0 0 0.375rem 0.375rem;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       }
       
@@ -66,6 +93,11 @@ class MultiSelect extends HTMLElement {
       
       .select-box option {
         padding: 0.25rem 0.5rem;
+        border-bottom: 1px solid #e9ecef;
+      }
+      
+      .select-box option:last-child {
+        border-bottom: none;
       }
       
       .button-column {
@@ -93,23 +125,46 @@ class MultiSelect extends HTMLElement {
         white-space: nowrap;
       }
       
-      .btn-primary {
+      .btn-success {
         color: #fff;
-        background-color: #0d6efd;
-        border-color: #0d6efd;
+        background-color: #198754;
+        border-color: #198754;
+        font-weight: bold;
+        font-size: 1.25rem;
       }
       
-      .btn-primary:hover {
+      .btn-success:hover {
         color: #fff;
-        background-color: #0b5ed7;
-        border-color: #0a58ca;
+        background-color: #157347;
+        border-color: #146c43;
       }
       
-      .btn-primary:focus {
+      .btn-success:focus {
         color: #fff;
-        background-color: #0b5ed7;
-        border-color: #0a58ca;
-        box-shadow: 0 0 0 0.25rem rgba(49, 132, 253, 0.5);
+        background-color: #157347;
+        border-color: #146c43;
+        box-shadow: 0 0 0 0.25rem rgba(60, 153, 110, 0.5);
+      }
+      
+      .btn-danger {
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+        font-weight: bold;
+        font-size: 1.25rem;
+      }
+      
+      .btn-danger:hover {
+        color: #fff;
+        background-color: #bb2d3b;
+        border-color: #b02a37;
+      }
+      
+      .btn-danger:focus {
+        color: #fff;
+        background-color: #bb2d3b;
+        border-color: #b02a37;
+        box-shadow: 0 0 0 0.25rem rgba(225, 83, 97, 0.5);
       }
       
       .btn-secondary {
@@ -165,15 +220,26 @@ class MultiSelect extends HTMLElement {
     this.selectedColumn = document.createElement("div")
     this.selectedColumn.className = "select-column"
     
+    this.selectedHeader = document.createElement("div")
+    this.selectedHeader.className = "select-header"
+    
     this.sel_label = document.createElement("div")
     this.sel_label.className = "select-label"
     this.sel_label.innerText = "Selected"
+    
+    this.selectedFilter = document.createElement("input")
+    this.selectedFilter.type = "text"
+    this.selectedFilter.className = "filter-input"
+    this.selectedFilter.placeholder = "Filter selected..."
+    
+    this.selectedHeader.appendChild(this.sel_label)
+    this.selectedHeader.appendChild(this.selectedFilter)
     
     this.selected = document.createElement("select")
     this.selected.multiple = true
     this.selected.className = "select-box"
     
-    this.selectedColumn.appendChild(this.sel_label)
+    this.selectedColumn.appendChild(this.selectedHeader)
     this.selectedColumn.appendChild(this.selected)
     
     // Create button column
@@ -181,13 +247,13 @@ class MultiSelect extends HTMLElement {
     this.buttonColumn.className = "button-column"
     
     this.sel_btn = document.createElement("button")
-    this.sel_btn.innerText = "Add →"
-    this.sel_btn.className = "btn btn-primary"
+    this.sel_btn.innerText = "+"
+    this.sel_btn.className = "btn btn-success"
     this.sel_btn.type = "button"
     
     this.desel_btn = document.createElement("button")
-    this.desel_btn.innerText = "← Remove"
-    this.desel_btn.className = "btn btn-secondary"
+    this.desel_btn.innerText = "−"
+    this.desel_btn.className = "btn btn-danger"
     this.desel_btn.type = "button"
     
     this.buttonColumn.appendChild(this.sel_btn)
@@ -197,15 +263,26 @@ class MultiSelect extends HTMLElement {
     this.unselectedColumn = document.createElement("div")
     this.unselectedColumn.className = "select-column"
     
+    this.unselectedHeader = document.createElement("div")
+    this.unselectedHeader.className = "select-header"
+    
     this.unsel_label = document.createElement("div")
     this.unsel_label.className = "select-label"
     this.unsel_label.innerText = "Available"
+    
+    this.availableFilter = document.createElement("input")
+    this.availableFilter.type = "text"
+    this.availableFilter.className = "filter-input"
+    this.availableFilter.placeholder = "Filter available..."
+    
+    this.unselectedHeader.appendChild(this.unsel_label)
+    this.unselectedHeader.appendChild(this.availableFilter)
     
     this.unselected = document.createElement("select")
     this.unselected.multiple = true
     this.unselected.className = "select-box"
     
-    this.unselectedColumn.appendChild(this.unsel_label)
+    this.unselectedColumn.appendChild(this.unselectedHeader)
     this.unselectedColumn.appendChild(this.unselected)
     
     // Assemble the component
@@ -232,7 +309,32 @@ class MultiSelect extends HTMLElement {
 
     this.updateValue()
     this.updateButtonStates()
+    this.setupFiltering()
 
+  }
+
+  setupFiltering() {
+    this.selectedFilter.addEventListener('input', () => {
+      this.filterOptions(this.selected, this.selectedFilter.value)
+    })
+    
+    this.availableFilter.addEventListener('input', () => {
+      this.filterOptions(this.unselected, this.availableFilter.value)
+    })
+  }
+
+  filterOptions(selectElement, filterValue) {
+    const options = Array.from(selectElement.options)
+    const searchText = filterValue.toLowerCase()
+    
+    options.forEach(option => {
+      const optionText = option.textContent.toLowerCase()
+      if (optionText.includes(searchText)) {
+        option.style.display = ''
+      } else {
+        option.style.display = 'none'
+      }
+    })
   }
 
   set value(value) {
@@ -292,6 +394,7 @@ class MultiSelect extends HTMLElement {
     this.desel_btn.addEventListener("click", this.deselBtnFunc)
     this.selected.addEventListener("change", this.updateButtonStatesOnChange)
     this.unselected.addEventListener("change", this.updateButtonStatesOnChange)
+    this.setupFiltering()
   }
 
   disconnectedCallback() {

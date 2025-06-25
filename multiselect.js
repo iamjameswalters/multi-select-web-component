@@ -208,6 +208,55 @@ class MultiSelect extends HTMLElement {
           min-width: auto;
         }
       }
+      
+      @media (prefers-color-scheme: dark) {
+        .select-header {
+          background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+          border-color: #4a5568;
+        }
+        
+        .select-label {
+          color: #e2e8f0;
+        }
+        
+        .filter-input {
+          background-color: #2d3748;
+          border-color: #4a5568;
+          color: #e2e8f0;
+        }
+        
+        .filter-input::placeholder {
+          color: #a0aec0;
+        }
+        
+        .filter-input:focus {
+          border-color: #63b3ed;
+          box-shadow: 0 0 0 0.125rem rgba(99, 179, 237, 0.25);
+        }
+        
+        .select-box {
+          background-color: #2d3748;
+          border-color: #4a5568;
+          color: #e2e8f0;
+        }
+        
+        .select-box:focus {
+          background-color: #2d3748;
+          border-color: #63b3ed;
+          color: #e2e8f0;
+          box-shadow: 0 0 0 0.25rem rgba(99, 179, 237, 0.25);
+        }
+        
+        .select-box option {
+          background-color: #2d3748;
+          color: #e2e8f0;
+          border-bottom-color: #4a5568;
+        }
+        
+        :host {
+          color: #e2e8f0;
+        }
+      }
     `
     
     shadowRoot.appendChild(style)
@@ -285,10 +334,10 @@ class MultiSelect extends HTMLElement {
     this.unselectedColumn.appendChild(this.unselectedHeader)
     this.unselectedColumn.appendChild(this.unselected)
     
-    // Assemble the component
-    this.container.appendChild(this.selectedColumn)
-    this.container.appendChild(this.buttonColumn)
+    // Assemble the component (flipped layout: Available - Buttons - Selected)
     this.container.appendChild(this.unselectedColumn)
+    this.container.appendChild(this.buttonColumn)
+    this.container.appendChild(this.selectedColumn)
     
     shadowRoot.appendChild(this.container)
 
@@ -389,11 +438,32 @@ class MultiSelect extends HTMLElement {
     this.updateButtonStates()
   }
 
+  mutualExclusionHandler = (targetSelect, otherSelect) => {
+    return () => {
+      if (targetSelect.selectedIndex !== -1) {
+        // Clear selection in the other select box
+        for (let i = 0; i < otherSelect.options.length; i++) {
+          otherSelect.options[i].selected = false;
+        }
+        this.updateButtonStates()
+      }
+    }
+  }
+
   connectedCallback() {
     this.sel_btn.addEventListener("click", this.selBtnFunc)
     this.desel_btn.addEventListener("click", this.deselBtnFunc)
     this.selected.addEventListener("change", this.updateButtonStatesOnChange)
     this.unselected.addEventListener("change", this.updateButtonStatesOnChange)
+    
+    // Store handler references for proper cleanup
+    this.selectedMutualExclusionHandler = this.mutualExclusionHandler(this.selected, this.unselected)
+    this.unselectedMutualExclusionHandler = this.mutualExclusionHandler(this.unselected, this.selected)
+    
+    // Add mutual exclusion for selections
+    this.selected.addEventListener("change", this.selectedMutualExclusionHandler)
+    this.unselected.addEventListener("change", this.unselectedMutualExclusionHandler)
+    
     this.setupFiltering()
   }
 
@@ -402,6 +472,14 @@ class MultiSelect extends HTMLElement {
     this.desel_btn.removeEventListener("click", this.deselBtnFunc)
     this.selected.removeEventListener("change", this.updateButtonStatesOnChange)
     this.unselected.removeEventListener("change", this.updateButtonStatesOnChange)
+    
+    // Remove mutual exclusion handlers
+    if (this.selectedMutualExclusionHandler) {
+      this.selected.removeEventListener("change", this.selectedMutualExclusionHandler)
+    }
+    if (this.unselectedMutualExclusionHandler) {
+      this.unselected.removeEventListener("change", this.unselectedMutualExclusionHandler)
+    }
   }
 }
 

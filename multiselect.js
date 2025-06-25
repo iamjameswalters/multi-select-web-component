@@ -62,9 +62,9 @@ class MultiSelect extends HTMLElement {
       }
       
       .filter-input:focus {
-        border-color: #86b7fe;
+        border-color: #bebebe;
         outline: 0;
-        box-shadow: 0 0 0 0.125rem rgba(13, 110, 253, 0.25);
+        box-shadow: 0 0 0 0.125rem rgba(125, 125, 125, 0.25);
       }
       
       .select-box {
@@ -84,9 +84,9 @@ class MultiSelect extends HTMLElement {
       .select-box:focus {
         color: #212529;
         background-color: #fff;
-        border-color: #86b7fe;
+        border-color: #bebebe;
         outline: 0;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        box-shadow: 0 0 0 0.25rem rgba(125, 125, 125, 0.25);
       }
       
       .select-box option {
@@ -211,7 +211,7 @@ class MultiSelect extends HTMLElement {
       
       @media (prefers-color-scheme: dark) {
         .select-header {
-          background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+          background: linear-gradient(135deg, #3e3e3e 0%, #494949 100%);
           border-color: #4a5568;
         }
         
@@ -230,8 +230,8 @@ class MultiSelect extends HTMLElement {
         }
         
         .filter-input:focus {
-          border-color: #63b3ed;
-          box-shadow: 0 0 0 0.125rem rgba(99, 179, 237, 0.25);
+          border-color: #acacac;
+          box-shadow: 0 0 0 0.125rem rgba(172, 172, 172, 0.25);
         }
         
         .select-box {
@@ -242,9 +242,9 @@ class MultiSelect extends HTMLElement {
         
         .select-box:focus {
           background-color: #2d3748;
-          border-color: #63b3ed;
+          border-color: #acacac;
           color: #e2e8f0;
-          box-shadow: 0 0 0 0.25rem rgba(99, 179, 237, 0.25);
+          box-shadow: 0 0 0 0.25rem rgba(172, 172, 172, 0.25);
         }
         
         .select-box option {

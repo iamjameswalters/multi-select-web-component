@@ -27,6 +27,15 @@ class MultiSelect extends HTMLElement {
           height: 200px;
         }
         
+        .select-box option {
+          padding: 0.5rem 0.5rem;
+          border-bottom: 1px solid rgb(239, 239, 239);
+        }
+        
+        .select-box option:last-child {
+          border-bottom: none;
+        }
+        
         .btn-square {
           width: 42px;
           height: 42px;
@@ -46,9 +55,6 @@ class MultiSelect extends HTMLElement {
             align-self: stretch;
           }
           
-          .select-box {
-            height: 150px;
-          }
         }
         
         @media (prefers-color-scheme: dark) {
@@ -72,9 +78,9 @@ class MultiSelect extends HTMLElement {
           <div class="card">
             <div class="card-header">
               <h6 class="card-title mb-2">Available</h6>
-              <input type="text" class="form-control form-control-sm available-filter" placeholder="Filter available...">
+              <input type="text" class="form-control available-filter" placeholder="Filter available...">
             </div>
-            <select multiple class="form-select select-box unselected"></select>
+            <select multiple class="form-select select-box unselected rounded-top-0"></select>
           </div>
         </div>
         
@@ -87,15 +93,15 @@ class MultiSelect extends HTMLElement {
           <div class="card">
             <div class="card-header">
               <h6 class="card-title mb-2">Selected</h6>
-              <input type="text" class="form-control form-control-sm selected-filter" placeholder="Filter selected...">
+              <input type="text" class="form-control selected-filter" placeholder="Filter selected...">
             </div>
-            <select multiple class="form-select select-box selected"></select>
+            <select multiple class="form-select select-box selected rounded-top-0"></select>
           </div>
         </div>
       </div>
     `;
     
-    // Query for elements instead of creating them
+    // Query for elements
     this.unselected = shadowRoot.querySelector('.unselected');
     this.selected = shadowRoot.querySelector('.selected');
     this.sel_btn = shadowRoot.querySelector('.sel-btn');

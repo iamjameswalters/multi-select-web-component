@@ -7,353 +7,110 @@ class MultiSelect extends HTMLElement {
     const shadowRoot = this.attachShadow({mode: "open"})
     this.internals = this.attachInternals()
     
-    // Add Bootstrap-inspired styles
-    const style = document.createElement('style')
-    style.textContent = `
-      :host {
-        display: block;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
-        font-size: 1rem;
-        line-height: 1.5;
-        color:rgb(41, 41, 41);
-        max-width: 100%;
-      }
-      
-      .multiselect-container {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 1rem;
-        align-items: start;
-        max-width: 100%;
-        padding: 1rem;
-      }
-      
-      .select-column {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-      }
-      
-      .select-header {
-        background: rgb(248, 248, 248);
-        border: 1px solid rgb(218, 218, 218);
-        border-bottom: none;
-        border-radius: 0.375rem 0.375rem 0 0;
-        padding: 0.75rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      
-      .select-label {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color:rgb(87, 87, 87);
-        margin: 0;
-      }
-      
-      .filter-input {
-        padding: 0.5rem;
-        font-size: 0.875rem;
-        border: 1px solid rgb(218, 218, 218);
-        border-radius: 0.25rem;
-        background-color: #fff;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-      }
-      
-      .filter-input:focus {
-        border-color: #bebebe;
-        outline: 0;
-        box-shadow: 0 0 0 0.125rem rgba(125, 125, 125, 0.25);
-      }
-      
-      .select-box {
-        width: 100%;
-        height: 200px;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: rgb(41, 41, 41);
-        background-color: #fff;
-        background-image: none;
-        border: 1px solid rgb(218, 218, 218);
-        border-radius: 0 0 0.375rem 0.375rem;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-      }
-      
-      .select-box:focus {
-        color: rgb(41, 41, 41);
-        background-color: #fff;
-        border-color: #bebebe;
-        outline: 0;
-        box-shadow: 0 0 0 0.25rem rgba(125, 125, 125, 0.25);
-      }
-      
-      .select-box option {
-        padding: 0.5rem 0.5rem;
-        border-bottom: 1px solid rgb(239, 239, 239);
-      }
-      
-      .select-box option:last-child {
-        border-bottom: none;
-      }
-      
-      .button-column {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        align-self: center;
-        min-width: 38px;
-      }
-      
-      .btn {
-        display: inline-block;
-        padding: 0.375rem 0.75rem;
-        margin-bottom: 0;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        text-align: center;
-        text-decoration: none;
-        vertical-align: middle;
-        cursor: pointer;
-        border: 1px solid transparent;
-        border-radius: 0.375rem;
-        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        white-space: nowrap;
-        width: 42px;
-        height: 42px;
-      }
-      
-      .btn-success {
-        color: #fff;
-        background-color: #198754;
-        border-color: #198754;
-        font-weight: bold;
-        font-size: 1.25rem;
-      }
-      
-      .btn-success:hover {
-        color: #fff;
-        background-color: #157347;
-        border-color: #146c43;
-      }
-      
-      .btn-success:focus {
-        color: #fff;
-        background-color: #157347;
-        border-color: #146c43;
-        box-shadow: 0 0 0 0.25rem rgba(60, 153, 110, 0.5);
-      }
-      
-      .btn-danger {
-        color: #fff;
-        background-color: #dc3545;
-        border-color: #dc3545;
-        font-weight: bold;
-        font-size: 1.25rem;
-      }
-      
-      .btn-danger:hover {
-        color: #fff;
-        background-color: #bb2d3b;
-        border-color: #b02a37;
-      }
-      
-      .btn-danger:focus {
-        color: #fff;
-        background-color: #bb2d3b;
-        border-color: #b02a37;
-        box-shadow: 0 0 0 0.25rem rgba(225, 83, 97, 0.5);
-      }
-      
-      .btn-secondary {
-        color: #fff;
-        background-color: rgb(125, 125, 125);
-        border-color: rgb(125, 125, 125);
-      }
-      
-      .btn-secondary:hover {
-        color: #fff;
-        background-color: rgb(106, 106, 106);
-        border-color: rgb(100, 100, 100);
-      }
-      
-      .btn-secondary:focus {
-        color: #fff;
-        background-color: rgb(106, 106, 106);
-        border-color: rgb(100, 100, 100);
-        box-shadow: 0 0 0 0.25rem rgba(145, 145, 145, 0.5);
-      }
-      
-      .btn:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-      }
-      
-      @media (max-width: 768px) {
+    // Get stylesheet URL from attribute or use default Bootstrap CDN
+    const stylesheetUrl = this.getAttribute('stylesheet') || 'https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css'
+    
+    shadowRoot.innerHTML = `
+      <link rel="stylesheet" href="${stylesheetUrl}">
+      <style>
+        :host {
+          display: block;
+          max-width: 100%;
+        }
+        
         .multiselect-container {
-          grid-template-columns: 1fr;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
           gap: 1rem;
-        }
-        
-        .button-column {
-          flex-direction: row;
-          justify-content: center;
-          align-self: stretch;
+          align-items: start;
+          padding: 1rem;
         }
         
         .select-box {
-          height: 150px;
-          min-width: auto;
-        }
-      }
-      
-      @media (prefers-color-scheme: dark) {
-        .select-box::-webkit-scrollbar {
-          width: 14px;
-        }
-
-        .select-box::-webkit-scrollbar-track {
-          background: rgb(45, 45, 45);
-        }
-
-        .select-box::-webkit-scrollbar-thumb {
-          background-color: rgb(104, 104, 104);
-          border-radius: 7px;
-          border: 3px solid rgb(45, 45, 45);
-        }
-
-        .select-header {
-          background: rgb(58, 58, 58);
-          border-color: rgb(104, 104, 104);
-        }
-        
-        .select-label {
-          color: rgb(240, 240, 240);
-        }
-        
-        .filter-input {
-          background-color: rgb(72, 72, 72);
-          border-color: rgb(104, 104, 104);
-          color: rgb(240, 240, 240);
-        }
-        
-        .filter-input::placeholder {
-          color: rgb(192, 192, 192);
-        }
-        
-        .filter-input:focus {
-          border-color: #acacac;
-          box-shadow: 0 0 0 0.125rem rgba(172, 172, 172, 0.25);
-        }
-        
-        .select-box {
-          background-color: rgb(72, 72, 72);
-          border-color: rgb(104, 104, 104);
-          color: rgb(240, 240, 240);
-        }
-        
-        .select-box:focus {
-          background-color: rgb(72, 72, 72);
-          border-color: #acacac;
-          color: rgb(240, 240, 240);
-          box-shadow: 0 0 0 0.25rem rgba(172, 172, 172, 0.25);
+          height: 200px;
         }
         
         .select-box option {
-          background-color: rgb(72, 72, 72);
-          color: rgb(240, 240, 240);
-          border-bottom-color: rgb(104, 104, 104);
+          padding: 0.5rem 0.5rem;
+          border-bottom: 1px solid rgb(239, 239, 239);
         }
         
-        :host {
-          color: rgb(240, 240, 240);
+        .select-box option:last-child {
+          border-bottom: none;
         }
-      }
-    `
+        
+        .btn-square {
+          width: 42px;
+          height: 42px;
+          font-size: 1.25rem;
+          font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+          .multiselect-container {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+          
+          .button-column {
+            flex-direction: row !important;
+            justify-content: center;
+            align-self: stretch;
+          }
+          
+        }
+        
+        @media (prefers-color-scheme: dark) {
+          .form-select::-webkit-scrollbar {
+            width: 14px;
+          }
+
+          .form-select::-webkit-scrollbar-track {
+            background: rgb(45, 45, 45);
+          }
+
+          .form-select::-webkit-scrollbar-thumb {
+            background-color: rgb(104, 104, 104);
+            border-radius: 7px;
+            border: 3px solid rgb(45, 45, 45);
+          }
+        }
+      </style>
+      <div class="multiselect-container">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-2"><slot name="available-label">Available</slot></h6>
+              <input type="text" class="form-control available-filter" placeholder="Filter available...">
+            </div>
+            <select multiple class="form-select select-box unselected rounded-top-0"></select>
+          </div>
+        </div>
+        
+        <div class="d-flex flex-column gap-2 align-self-center button-column">
+          <button type="button" class="btn btn-success btn-square sel-btn">+</button>
+          <button type="button" class="btn btn-danger btn-square desel-btn">−</button>
+        </div>
+        
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-2"><slot name="selected-label">Selected</slot></h6>
+              <input type="text" class="form-control selected-filter" placeholder="Filter selected...">
+            </div>
+            <select multiple class="form-select select-box selected rounded-top-0"></select>
+          </div>
+        </div>
+      </div>
+    `;
     
-    shadowRoot.appendChild(style)
-    
-    // Create main container
-    this.container = document.createElement("div")
-    this.container.className = "multiselect-container"
-    
-    // Create selected column
-    this.selectedColumn = document.createElement("div")
-    this.selectedColumn.className = "select-column"
-    
-    this.selectedHeader = document.createElement("div")
-    this.selectedHeader.className = "select-header"
-    
-    this.sel_label = document.createElement("div")
-    this.sel_label.className = "select-label"
-    this.sel_label.innerText = "Selected"
-    
-    this.selectedFilter = document.createElement("input")
-    this.selectedFilter.type = "text"
-    this.selectedFilter.className = "filter-input"
-    this.selectedFilter.placeholder = "Filter selected..."
-    
-    this.selectedHeader.appendChild(this.sel_label)
-    this.selectedHeader.appendChild(this.selectedFilter)
-    
-    this.selected = document.createElement("select")
-    this.selected.multiple = true
-    this.selected.className = "select-box"
-    
-    this.selectedColumn.appendChild(this.selectedHeader)
-    this.selectedColumn.appendChild(this.selected)
-    
-    // Create button column
-    this.buttonColumn = document.createElement("div")
-    this.buttonColumn.className = "button-column"
-    
-    this.sel_btn = document.createElement("button")
-    this.sel_btn.innerText = "+"
-    this.sel_btn.className = "btn btn-success"
-    this.sel_btn.type = "button"
-    
-    this.desel_btn = document.createElement("button")
-    this.desel_btn.innerText = "−"
-    this.desel_btn.className = "btn btn-danger"
-    this.desel_btn.type = "button"
-    
-    this.buttonColumn.appendChild(this.sel_btn)
-    this.buttonColumn.appendChild(this.desel_btn)
-    
-    // Create unselected column
-    this.unselectedColumn = document.createElement("div")
-    this.unselectedColumn.className = "select-column"
-    
-    this.unselectedHeader = document.createElement("div")
-    this.unselectedHeader.className = "select-header"
-    
-    this.unsel_label = document.createElement("div")
-    this.unsel_label.className = "select-label"
-    this.unsel_label.innerText = "Available"
-    
-    this.availableFilter = document.createElement("input")
-    this.availableFilter.type = "text"
-    this.availableFilter.className = "filter-input"
-    this.availableFilter.placeholder = "Filter available..."
-    
-    this.unselectedHeader.appendChild(this.unsel_label)
-    this.unselectedHeader.appendChild(this.availableFilter)
-    
-    this.unselected = document.createElement("select")
-    this.unselected.multiple = true
-    this.unselected.className = "select-box"
-    
-    this.unselectedColumn.appendChild(this.unselectedHeader)
-    this.unselectedColumn.appendChild(this.unselected)
-    
-    // Assemble the component (flipped layout: Available - Buttons - Selected)
-    this.container.appendChild(this.unselectedColumn)
-    this.container.appendChild(this.buttonColumn)
-    this.container.appendChild(this.selectedColumn)
-    
-    shadowRoot.appendChild(this.container)
+    // Query for elements
+    this.unselected = shadowRoot.querySelector('.unselected');
+    this.selected = shadowRoot.querySelector('.selected');
+    this.sel_btn = shadowRoot.querySelector('.sel-btn');
+    this.desel_btn = shadowRoot.querySelector('.desel-btn');
+    this.availableFilter = shadowRoot.querySelector('.available-filter');
+    this.selectedFilter = shadowRoot.querySelector('.selected-filter');
 
     // Initialize options
     this.options = []

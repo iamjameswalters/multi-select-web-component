@@ -7,8 +7,11 @@ class MultiSelect extends HTMLElement {
     const shadowRoot = this.attachShadow({mode: "open"})
     this.internals = this.attachInternals()
     
+    // Get stylesheet URL from attribute or use default Bootstrap CDN
+    const stylesheetUrl = this.getAttribute('stylesheet') || 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'
+    
     shadowRoot.innerHTML = `
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+      <link rel="stylesheet" href="${stylesheetUrl}">
       <style>
         :host {
           display: block;
@@ -77,7 +80,7 @@ class MultiSelect extends HTMLElement {
         <div class="col">
           <div class="card">
             <div class="card-header">
-              <h6 class="card-title mb-2">Available</h6>
+              <h6 class="card-title mb-2"><slot name="available-label">Available</slot></h6>
               <input type="text" class="form-control available-filter" placeholder="Filter available...">
             </div>
             <select multiple class="form-select select-box unselected rounded-top-0"></select>
@@ -92,7 +95,7 @@ class MultiSelect extends HTMLElement {
         <div class="col">
           <div class="card">
             <div class="card-header">
-              <h6 class="card-title mb-2">Selected</h6>
+              <h6 class="card-title mb-2"><slot name="selected-label">Selected</slot></h6>
               <input type="text" class="form-control selected-filter" placeholder="Filter selected...">
             </div>
             <select multiple class="form-select select-box selected rounded-top-0"></select>

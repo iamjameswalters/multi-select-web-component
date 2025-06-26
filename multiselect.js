@@ -130,7 +130,7 @@ class MultiSelect extends HTMLElement {
     this.updateValue()
     this.updateButtonStates()
     this.setupFiltering()
-
+    this.style.visibility = "visible"
   }
 
   setupFiltering() {

@@ -8,7 +8,7 @@ class MultiSelect extends HTMLElement {
     this.internals = this.attachInternals()
     
     // Get stylesheet URL from attribute or use default Bootstrap CDN
-    const stylesheetUrl = this.getAttribute('stylesheet') || 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'
+    const stylesheetUrl = this.getAttribute('stylesheet') || 'https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css'
     
     shadowRoot.innerHTML = `
       <link rel="stylesheet" href="${stylesheetUrl}">

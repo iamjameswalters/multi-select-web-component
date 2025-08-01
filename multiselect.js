@@ -61,6 +61,10 @@ class MultiSelect extends HTMLElement {
         }
         
         @media (prefers-color-scheme: dark) {
+          .select-box option {
+            border-bottom: 1px solid rgb(120, 120, 120);
+          }
+
           .form-select::-webkit-scrollbar {
             width: 14px;
           }
